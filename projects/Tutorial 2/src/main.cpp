@@ -182,7 +182,7 @@ int main() {
 		shader2->Bind();
 		vao2->Bind();
 		glDrawElements(GL_TRIANGLES, interleaved_ibo->GetElementCount(), interleaved_ibo->GetElementType(), nullptr);
-		//vao2->UnBind();
+		vao2->UnBind();
 
 		glfwSwapBuffers(window);
 	}
