@@ -32,7 +32,8 @@ bool Shader::LoadShaderPart(const char* source, GLenum type)
 
 	// Get the compilation status for the shader part
 	GLint status = 0;
-	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+
 	if (status == GL_FALSE) {
 		// Get the size of the error log
 		GLint logSize = 0;
@@ -48,7 +49,8 @@ bool Shader::LoadShaderPart(const char* source, GLenum type)
 		// Delete the broken shader result
 		glDeleteShader(handle);
 		handle = 0;
-	}
+	}
+
 	switch (type) {
 	case GL_VERTEX_SHADER: _vs = handle; break;
 	case GL_FRAGMENT_SHADER: _fs = handle; break;
@@ -75,7 +77,8 @@ bool Shader::Link()
 	glAttachShader(_handle, _vs);
 	glAttachShader(_handle, _fs);
 	// Perform linking
-	glLinkProgram(_handle);
+	glLinkProgram(_handle);
+
 	// Remove shader parts to save space (we can do this since we only needed the shader parts to compile an actual shader program)
 	glDetachShader(_handle, _vs);
 	glDeleteShader(_vs);
