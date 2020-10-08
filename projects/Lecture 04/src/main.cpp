@@ -15,7 +15,7 @@ bool initGLFW() {
 	}
 
 	//Create a new GLFW window
-	window = glfwCreateWindow(800, 800, "INFR1350U", nullptr, nullptr);
+	window = glfwCreateWindow(800, 800, "Pham James 100741773", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	return true;
@@ -84,9 +84,9 @@ GLfloat posY = 0.0f;
 
 void keyboard() {
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		rotY += 0.1;
+		rotY += 0.4;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		rotY -= 0.1;
+		rotY -= 0.4;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		posY += 0.001;
@@ -168,8 +168,10 @@ int main() {
 	glm::mat4 Model = glm::mat4(1.0f); //reseting the matrix
 
 	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
-	Model = glm::rotate(Model, glm::radians(90.0f), glm::vec3(0.0f, 1.5f, 0.f));
+	Model = glm::rotate(Model, glm::radians(90.0f), glm::vec3(0.0f, 0.5f, 0.0f));
 	Model = glm::scale(Model, glm::vec3(1.0f, 1.0f, 1.0f));
+
+
 	
 	// T * R * S <-- from the right
 
@@ -191,6 +193,7 @@ int main() {
 	//glCullFace(GL_BACK);
 
 
+
 	///// Game loop /////
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -203,8 +206,15 @@ int main() {
 		//Lecture 04
 		Model = glm::mat4(1.0f);
 		keyboard();
+		//Moving the triangle with (W A S D) keys
 		Model = glm::translate(Model, glm::vec3(posX, posY, 0.0f));
+		//Moving the triangle to the orgin
+		Model = glm::translate(Model, glm::vec3(0.0f, 0.5f, 0.0f));
+		//Rotating the triangle around the orgin
 		Model = glm::rotate(Model, glm::radians(rotY), glm::vec3(0.0f, 0.0f, 1.0f));
+		//Moving the triangle orgin to the blue point
+		Model = glm::translate(Model, glm::vec3(0.0f, -0.5f, 0.0f));
+		
 		mvp = Projection * View * Model;
 		//rotY = 0.0;
 		
