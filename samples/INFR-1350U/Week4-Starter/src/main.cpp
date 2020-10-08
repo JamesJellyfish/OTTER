@@ -65,7 +65,7 @@ bool initGLFW() {
 	}
 
 	//Create a new GLFW window
-	window = glfwCreateWindow(800, 800, "INFR1350U", nullptr, nullptr);
+	window = glfwCreateWindow(800, 800, "Pham James 100741773", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Set our window resized callback
@@ -95,6 +95,8 @@ int main() {
 	// Let OpenGL know that we want debug output, and route it to our handler function
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(GlDebugMessage, nullptr);
+	
+	//Trangle 1
 
 	static const float points[] = {
 		-0.5f, -0.5f, 0.0f,
@@ -123,6 +125,8 @@ int main() {
 		BufferAttribute(1, 3, GL_FLOAT, false, 0, NULL)
 	});
 
+	// Trangle 2
+
 	static const float interleaved[] = {
     //     X      Y     Z       R     G    B
 		 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,
@@ -148,6 +152,8 @@ int main() {
 		BufferAttribute(1, 3, GL_FLOAT, false, stride, sizeof(float) * 3),
 	});
 	vao2->SetIndexBuffer(interleaved_ibo);
+	
+	//Triangle 3
 
 	static const float interleaved3[] = {
 		//     X      Y     Z       R     G    B
@@ -205,9 +211,10 @@ int main() {
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
 		transform = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 0, 1));
-		transform2 = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
-		transform3 = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
-		//transform3 = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(1, 0, 0));//translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
+		transform2 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, glm::sin(static_cast<float>(thisFrame))));
+		
+		transform3 = glm::translate(glm::mat4(1.0f), glm::vec3(glm::sin(static_cast<float>(thisFrame)), 0.0f, 0.0f)) + glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 1, 0));
+		
 
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
