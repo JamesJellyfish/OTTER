@@ -35,6 +35,10 @@ public:
 	/// </summary>
 	void LookAt(const glm::vec3& point);
 
+	void SetCam(bool cam);
+
+	void SetCamera(bool type);
+
 	/// <summary>
 	/// Notifies this camera that the window has resized, and updates our projection matrix
 	/// </summary>
@@ -76,11 +80,17 @@ public:
 	/// </summary>
 	const glm::mat4& GetViewProjection() const;
 
+	bool GetCamera() const
+	{
+		return camType;
+	}
+
 protected:
 	float _nearPlane;
 	float _farPlane;
 	float _fovRadians;
 	float _aspectRatio;
+	bool camType;
 
 	glm::vec3 _position;
 	glm::vec3 _normal;

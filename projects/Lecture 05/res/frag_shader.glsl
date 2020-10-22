@@ -29,13 +29,15 @@ void main() {
     float dist = length(LightPos - inPos);
     diffuse - diffuse / dist; // (dist*dist)
 
-    // spectular
-    vec3 camPos = vec3(0.0, 0.0, 3.0);//pass this as a uniform from your c++ code
-    float specularStrength = 1.0;//can be uniform
+    // Specular
+    vec3 camPos = vec3(0.0, 0.0, 3.0) ;//Pass this as a uniform from your C++ code
+    float specularStrength = 1.0; // this can be a uniform
     vec3 camDir = normalize(camPos - inPos);
+    vec3 halfwayDir = vec3(normalize(lightDir + camDir));
     vec3 reflectDir = reflect(-lightDir, N);
-    float spec = pow(max(dot(camDir, reflectDir), 0.0), 500); //shininess coefficent, should be uniform
-    vec3 specular = specularStrength * spec * lightColor;//can also use a specular color
+    float spec = pow(max(dot(N, halfwayDir), 0.0), 128); // Shininess coefficient (can be a uniform)    
+	
+    vec3 specular = specularStrength * spec * lightColor; // Can also use a specular color
 
     vec3 result = (ambient + diffuse + specular);
 

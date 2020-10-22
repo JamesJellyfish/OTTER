@@ -7,6 +7,40 @@
 #include <GLM/glm.hpp> //04
 #include <glm/gtc/matrix_transform.hpp> //04
 
+// LECTURE 7
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+unsigned char* image;
+int width, height;
+
+void loadImage() { // passs the filepath string as a arguments
+	int channels;
+	stbi_set_flip_vertically_on_load(true);
+
+	image = stbi_load("box.bmp", &width, &height, &channels, 0);
+
+	if (image)
+		std::cout << "Image loaded: " << width << " x " << height << std::endl;
+	else std::cout << "Fail to load image!!!" << std::endl;
+
+}
+
+unsigned char* image2;
+int width2, height2;
+
+void loadImage2() { // passs the filepath string as a arguments
+	int channels2;
+	stbi_set_flip_vertically_on_load(true);
+
+	image2 = stbi_load("checker.bmp", &width2, &height2, &channels2, 0);
+
+	if (image2)
+		std::cout << "Image loaded: " << width2 << " x " << height2 << std::endl;
+	else std::cout << "Fail to load image!!!" << std::endl;
+
+}
+
 GLFWwindow* window;
 
 bool initGLFW() {
@@ -16,7 +50,7 @@ bool initGLFW() {
 	}
 
 	//Create a new GLFW window
-	window = glfwCreateWindow(1000, 800, "Pham James 100741773", nullptr, nullptr);
+	window = glfwCreateWindow(1000, 800, "INFR2670", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	return true;
@@ -80,11 +114,25 @@ bool loadShaders() {
 // Lecture 04
 GLfloat rotY = 0.0f;
 
+// Lecuter 7
+GLfloat rotX = 0.0f;
+GLfloat tranZ = 0.0f;
+
 void keyboard() {
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		rotY += 0.1;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		rotY -= 0.1;
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		rotX += 0.1;
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		rotX -= 0.1;
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		tranZ += 0.01;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		tranZ -= 0.01;
 }
 
 
@@ -96,9 +144,10 @@ int main() {
 	//Initialize GLAD
 	if (!initGLAD())
 		return 1;
-
+	
 	// Cube data
 	static const GLfloat points[] = {
+		// Face 1 (front)
 		-0.5f, -0.5f, 0.5f,//0  
 		0.5f, -0.5f, 0.5f, //3  
 		-0.5f, 0.5f, 0.5f, //1 
@@ -106,6 +155,7 @@ int main() {
 		0.5f, 0.5f, 0.5f, //2   
 		-0.5f, 0.5f, 0.5f, //1 
 
+		// Face 2 (right)
 		0.5f, -0.5f, 0.5f, //3
 		0.5f, -0.5f, -0.5f, //7
 		0.5f, 0.5f, 0.5f, //2
@@ -113,13 +163,15 @@ int main() {
 		0.5f, 0.5f, -0.5f, //6 
 		0.5f, 0.5f, 0.5f,  //2
 
+		// Face 3 (left)
 		-0.5f, -0.5f, -0.5f, //4 
 		-0.5f, -0.5f, 0.5f, //0  
 		-0.5f, 0.5f, -0.5f, //5
 		-0.5f, -0.5f, 0.5f, //0 
 		-0.5f, 0.5f, 0.5f,  //1
 		-0.5f, 0.5f, -0.5f, //5
-								
+
+		// Face 4 (back)
 		0.5f, -0.5f, -0.5f,
 		-0.5f, -0.5f, -0.5f,
 		0.5f, 0.5f, -0.5f,
@@ -127,24 +179,24 @@ int main() {
 		-0.5f, 0.5f, -0.5f,
 		0.5f, 0.5f, -0.5f,
 
-		//top face
-		-0.5f, 0.5f, -0.5f, //1
-		-0.5f, 0.5f, 0.5f, //2 
-		0.5f, 0.5f, -0.5f, //
-		0.5f, 0.5f, -0.5f, //1
-		-0.5f, 0.5f, 0.5f, //2 
-		0.5f, 0.5f, 0.5f, //2  
+		// Face 5 (top)
+		-0.5f, 0.5f, -0.5f, 
+		-0.5f, 0.5f, 0.5f, 
+		0.5f, 0.5f, -0.5f, 
+		0.5f, 0.5f, -0.5f, 
+		-0.5f, 0.5f, 0.5f, 
+		0.5f, 0.5f, 0.5f, 
 
-		//bot face
-		-0.5f, -0.5f, 0.5f, //1
-		-0.5f, -0.5f, -0.5f, //2 
-		0.5f, -0.5f, 0.5f, //
-		0.5f, -0.5f, 0.5f, //1
-		-0.5f, -0.5f, -0.5f, //2 
-		0.5f, -0.5f, -0.5f //2 
+		// Face 6 (bottom)
+		-0.5f, -0.5f, 0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		0.5f, -0.5f, 0.5f, 
+		0.5f, -0.5f, 0.5f, 
+		-0.5f, -0.5f, -0.5f, 
+		0.5f, -0.5f, -0.5f 
 	};
-	
-	
+
+
 
 	// Color data
 	static const GLfloat colors[] = {
@@ -155,6 +207,7 @@ int main() {
 		1.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
+
 		// Face 2 (right)
 		0.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
@@ -162,6 +215,7 @@ int main() {
 		0.0f, 1.0f, 1.0f,
 		0.0f, 1.0f, 1.0f,
 		0.0f, 1.0f, 1.0f,
+
 		// Face 3 (left)
 		0.0f, 1.0f, 1.0f,
 		0.0f, 1.0f, 1.0f,
@@ -169,6 +223,7 @@ int main() {
 		0.0f, 0.5f, 1.0f,
 		0.0f, 0.5f, 1.0f,
 		0.0f, 0.5f, 1.0f,
+
 		// Face 4 (back)
 		0.0f, 0.2f, 1.0f,
 		0.0f, 0.2f, 1.0f,
@@ -176,6 +231,7 @@ int main() {
 		1.0f, 0.2f, 0.6f,
 		1.0f, 0.2f, 0.6f,
 		1.0f, 0.2f, 0.6f,
+
 		// Face 5 (top)
 		0.0f, 0.3f, 1.0f,
 		0.0f, 0.3f, 1.0f,
@@ -183,6 +239,7 @@ int main() {
 		1.0f, 1.0f, 0.0f,
 		1.0f, 1.0f, 0.0f,
 		1.0f, 1.0f, 0.0f,
+
 		// Face 6 (bottom)
 		0.7f, 0.0f, 1.0f,
 		0.7f, 0.0f, 1.0f,
@@ -191,7 +248,7 @@ int main() {
 		1.0f, 0.7f, 0.0f,
 		1.0f, 0.7f, 0.0f
 	};
-	
+
 	//////// LECTURE 05 STARTS HERE
 	static const GLfloat normals[] = {
 		// Face 1 (front)
@@ -201,6 +258,7 @@ int main() {
 		0.0f, 0.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,
+
 		// Face 2 (right)
 		1.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -208,6 +266,7 @@ int main() {
 		1.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
+
 		// Face 3 (left)
 		-1.0f, 0.0f, 0.0f,
 		-1.0f, 0.0f, 0.0f,
@@ -215,6 +274,7 @@ int main() {
 		-1.0f, 0.0f, 0.0f,
 		-1.0f, 0.0f, 0.0f,
 		-1.0f, 0.0f, 0.0f,
+
 		// Face 4 (back)
 		0.0f, 0.0f, -1.0f,
 		0.0f, 0.0f, -1.0f,
@@ -222,6 +282,7 @@ int main() {
 		0.0f, 0.0f, -1.0f,
 		0.0f, 0.0f, -1.0f,
 		0.0f, 0.0f, -1.0f,
+
 		// Face 5 (top)
 		0.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
@@ -229,6 +290,7 @@ int main() {
 		0.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
+
 		// Face 6 (bottom)
 		0.0f, -1.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
@@ -237,11 +299,61 @@ int main() {
 		0.0f, -1.0f, 0.0f,
 		0.0f, -1.0f, 0.0f
 	};
-	
+
+	// LECTURE 7
+	static const GLfloat uv[] = {
+		// Face 1 (front)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f,
+		// Face 2 (right)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f,
+
+		// Face 3 (left)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f,
+
+		// Face 4 (back)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f,
+
+		// Face 5 (top)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f,
+
+		// Face 6 (bottom)
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f
+	};
+
 	// Lecture 5
 	GLfloat cameraPos[] = { 0.0f, 0.0f, 3.0f };
 	GLfloat lightPos[] = { 0.0f, 0.0f, 3.0f };
-
+		
 	//VBO
 	GLuint pos_vbo = 0;
 	glGenBuffers(1, &pos_vbo);
@@ -258,8 +370,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
 
-
 	glBindBuffer(GL_ARRAY_BUFFER, pos_vbo);
+
 	//			(index, size, type, normalized, stride, pointer)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	//			(stride: byte offset between consecutive values)
@@ -273,11 +385,35 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-
+	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2); 
-	// Lecture 5
+	glEnableVertexAttribArray(2); // Lecture 5
+
+	// LECTURE 7
+	GLuint uv_vbo = 3;
+	glGenBuffers(1, &uv_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(uv), uv, GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(3);
+
+	loadImage();
+	//loadImage2();
+
+	GLuint textureHandle;
+	glGenTextures(1, &textureHandle);
+	glBindTexture(GL_TEXTURE_2D, textureHandle);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	// Texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // GL_LINEAR
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // GL_LINEAR
+
+	// free image space
+	stbi_image_free(image);
+	//stbi_image_free(image2);
+
 	// Load your shaders
 	if (!loadShaders())
 		return 1;
@@ -299,7 +435,7 @@ int main() {
 	
 	// Model matrix : an identity matrix (model will be at the origin)
 	glm::mat4 Model = glm::mat4(1.0f);
-	
+
 	// Our ModelViewProjection : multiplication of our 3 matrices
 	glm::mat4 mvp = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
@@ -307,7 +443,7 @@ int main() {
 	// Only during the initialisation
 	GLuint MatrixID = 
 		glGetUniformLocation(shader_program, "MVP");
-	
+
 	// Lecture 05
 	GLuint ViewID =
 		glGetUniformLocation(shader_program, "View");
@@ -315,8 +451,9 @@ int main() {
 		glGetUniformLocation(shader_program, "Model");
 	GLuint LightPosID =
 		glGetUniformLocation(shader_program, "LightPos");
-	///////////////////////
-		
+
+	/////////////////
+	
 	glEnable(GL_DEPTH_TEST);
 
 	// Face culling
@@ -338,6 +475,8 @@ int main() {
 		Model = glm::mat4(1.0f);
 		keyboard();												//X	    Y     Z
 		Model = glm::rotate(Model, glm::radians(rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+		Model = glm::rotate(Model, glm::radians(rotX), glm::vec3(1.0f, 0.0f, 0.0f));
+		Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, tranZ));
 		mvp = Projection * View * Model;
 		
 		//Lecture 04
@@ -345,18 +484,18 @@ int main() {
 		// This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
 		glUniformMatrix4fv(MatrixID, 1, 
 			GL_FALSE, &mvp[0][0]);
-
+		
 		// Lecture 5
 		glUniformMatrix4fv(ViewID, 1,
 			GL_FALSE, &View[0][0]);
 		glUniformMatrix4fv(ModelID, 1,
 			GL_FALSE, &Model[0][0]);
 		glUniform3fv(LightPosID, 1, &lightPos[0]);
+		/////////////// 5
+
 		
-		////////////////////// 5
-		
-		// draw points 0-36 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// draw points 0-18 
+		glDrawArrays(GL_TRIANGLES, 0, 36);//36
 		
 		
 		glfwSwapBuffers(window);
