@@ -59,6 +59,7 @@ VertexArrayObject::sptr ObjLoader::OBJLoader(const std::string& file)
 	//Reading one line a time
 	while (std::getline(in_file, line))
 	{
+		//Trim whitespace
 		trim(line);
 		if (line.substr(0, 1) == "#")
 		{
@@ -74,7 +75,7 @@ VertexArrayObject::sptr ObjLoader::OBJLoader(const std::string& file)
 		}
 		else if (line.substr(0, 3) == "vt ") //Vertext texture
 		{
-			std::istringstream ss = std::istringstream(line.substr(2));
+			std::istringstream ss = std::istringstream(line.substr(3));
 			glm::vec2 vtexture;
 			ss >> vtexture.x >> vtexture.y;
 			temp_vertexTexture.push_back(vtexture);
@@ -82,7 +83,7 @@ VertexArrayObject::sptr ObjLoader::OBJLoader(const std::string& file)
 		}
 		else if (line.substr(0, 3) == "vn ") //Vertext normal
 		{
-			std::istringstream ss = std::istringstream(line.substr(2));
+			std::istringstream ss = std::istringstream(line.substr(3));
 			glm::vec3 vnormal;
 			ss >> vnormal.x >> vnormal.y >> vnormal.z;
 			temp_vertexNormals.push_back(vnormal);
@@ -127,9 +128,10 @@ VertexArrayObject::sptr ObjLoader::OBJLoader(const std::string& file)
 		unsigned int vertexIndex = vertexIndices[i];
 		unsigned int texcoordIndex = texcoordIndices[i];
 		unsigned int normalIndex = normalIndices[i];
+
 		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
-		glm::vec2 texcoord = temp_vertexTexture[vertexIndex - 1];
-		glm::vec3 normal = temp_vertexNormals[vertexIndex - 1];
+		glm::vec2 texcoord = temp_vertexTexture[texcoordIndex - 1];
+		glm::vec3 normal = temp_vertexNormals[normalIndex - 1];
 
 		mesh.AddVertex(vertex, normal, texcoord, glm::vec4(1));
 		mesh.AddIndex(i);

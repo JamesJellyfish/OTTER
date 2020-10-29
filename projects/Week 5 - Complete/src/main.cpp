@@ -369,7 +369,7 @@ int main() {
 			transform3 = glm::translate(transform3, glm::vec3(0.0f,  1.0f * dt, 0.0f));
 		}
 				
-		//transform = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 1, 0));
+		transform = glm::rotate(glm::mat4(1.0f), static_cast<float>(thisFrame), glm::vec3(0, 1, 0));
 
 		//transform2 = transform * glm::translate(glm::mat4(1.0f), glm::vec3(0, 0.0f, glm::sin(static_cast<float>(thisFrame))));
 		
@@ -400,7 +400,7 @@ int main() {
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection() * transform);
 		shader->SetUniformMatrix("u_Model", transform);
 		shader->SetUniformMatrix("u_ModelRotation", glm::mat3(transform));
-		//vao->Render();
+		vao->Render();
 
 		shader->SetUniformMatrix("u_ModelViewProjection", camera->GetViewProjection()* transform2);
 		shader->SetUniformMatrix("u_Model", transform2);
